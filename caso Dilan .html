@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Caso Dilan Cruz — Archivo de la Polarización</title>
+<style>
+  body{margin:0;padding:0;background:#1A0E05;font-family:Georgia,serif;}
+  .pin{width:14px;height:14px;border-radius:50%;position:absolute;top:-7px;left:50%;transform:translateX(-50%);z-index:20;box-shadow:0 2px 3px rgba(0,0,0,0.55);}
+  .pin-r{background:radial-gradient(circle at 35% 30%, #FF4444 0%, #CC0000 60%, #800000 100%);}
+  .pin-b{background:radial-gradient(circle at 35% 30%, #5577DD 0%, #1A3DB5 60%, #001A66 100%);}
+  .pin-y{background:radial-gradient(circle at 35% 30%, #FFE066 0%, #E6A800 60%, #8C6600 100%);}
+  .pin-g{background:radial-gradient(circle at 35% 30%, #66DD66 0%, #007722 60%, #003D11 100%);}
+  .item-paper{position:absolute;background:#F4EED8;border:0.5px solid #BBB;padding:12px;font-family:Georgia,serif;box-shadow:3px 4px 8px rgba(0,0,0,0.45);}
+  .item-sticky{position:absolute;padding:10px 11px;font-size:10px;line-height:1.4;box-shadow:2px 3px 6px rgba(0,0,0,0.4);}
+  .item-photo{position:absolute;background:#CCC;border:6px solid #EDE6D2;box-shadow:3px 4px 8px rgba(0,0,0,0.45);}
+  .tweet-dark{position:absolute;background:#000;color:#E7E9EA;padding:13px 14px;border-radius:14px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;box-shadow:3px 4px 9px rgba(0,0,0,0.55);border:1px solid #2F3336;}
+  .tweet-dark .handle{color:#71767B;font-size:11px;}
+  .tweet-dark .name{color:#FFF;font-weight:700;font-size:12px;}
+  .tweet-dark .verified{color:#1D9BF0;font-size:11px;}
+  .tweet-dark .body{color:#E7E9EA;font-size:12.5px;line-height:1.45;margin-top:6px;}
+  .tweet-dark .meta{color:#71767B;font-size:10px;margin-top:8px;}
+  .str-r,.str-b,.str-x{transition:opacity 0.3s;}
+  .ctrl-btn{background:transparent;border:1px solid #555;color:#CCC;padding:6px 14px;font-family:monospace;font-size:9px;letter-spacing:1px;cursor:pointer;text-transform:uppercase;}
+  .ctrl-btn:hover{border-color:#AAA;color:#FFF;}
+  .ctrl-btn.active-r{border-color:#CC1100;color:#FF8888;background:rgba(204,17,0,0.1);}
+  .ctrl-btn.active-b{border-color:#3366FF;color:#88AAFF;background:rgba(51,102,255,0.1);}
+  .ctrl-btn.active-a{border-color:#D4A847;color:#FFD966;background:rgba(212,168,71,0.1);}
+  .stamp{display:inline-block;border:2px solid #8B0000;color:#8B0000;padding:2px 6px;font-family:monospace;font-size:9px;letter-spacing:2px;transform:rotate(-4deg);font-weight:700;opacity:0.85;}
+  .censor-overlay{position:absolute;background:#000;mix-blend-mode:normal;}
+</style>
+</head>
+<body>
+
+<h2 class="sr-only">Archivo de la Polarización — caso Dilan Cruz. Tablero de muro de corcho con narrativas opuestas. Hilo rojo: izquierda (asesinato). Hilo azul: derecha (accidente / vándalo).</h2>
+
+<!-- ═══════════════ BARRA DE CONTROL ═══════════════ -->
+<div style="display:flex;align-items:center;gap:10px;padding:9px 16px;background:#0B0500;border-bottom:3px solid #7A4F2A;">
+  <span style="color:#A08040;font-size:9px;letter-spacing:3px;font-family:monospace;">FILTRAR NARRATIVA:</span>
+  <button class="ctrl-btn active-a" id="btn-all" onclick="filtrar('all')">AMBAS</button>
+  <button class="ctrl-btn" id="btn-b" onclick="filtrar('b')">● DERECHA · "ACCIDENTE / VÁNDALO"</button>
+  <button class="ctrl-btn" id="btn-r" onclick="filtrar('r')">● IZQUIERDA · "ASESINATO DE ESTADO"</button>
+  <span style="color:#666;font-size:9px;margin-left:auto;letter-spacing:2px;font-family:monospace;">EXPEDIENTE 23-N · CASO DILAN CRUZ MEDINA</span>
+</div>
+
+<!-- ═══════════════ TABLERO ═══════════════ -->
+<div style="overflow:auto;width:100%;height:760px;background:#3D2410;border-top:6px solid #7A4F2A;border-bottom:6px solid #4A2E14;">
+<div id="board" style="position:relative;width:1700px;height:1530px;background:
+  radial-gradient(ellipse at 30% 20%, rgba(180,144,96,0.35) 0%, transparent 50%),
+  radial-gradient(ellipse at 70% 70%, rgba(160,128,80,0.3) 0%, transparent 50%),
+  #B49060;
+  background-color:#B49060;
+  font-family:Georgia,serif;
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(80,50,20,0.18) 1px, transparent 1.5px),
+    radial-gradient(circle at 32% 47%, rgba(80,50,20,0.15) 1px, transparent 1.5px),
+    radial-gradient(circle at 53% 22%, rgba(80,50,20,0.2) 1px, transparent 2px),
+    radial-gradient(circle at 73% 67%, rgba(80,50,20,0.15) 1px, transparent 1.5px),
+    radial-gradient(circle at 88% 35%, rgba(80,50,20,0.18) 1px, transparent 1.5px),
+    radial-gradient(circle at 18% 78%, rgba(80,50,20,0.16) 1px, transparent 1.5px),
+    radial-gradient(circle at 62% 88%, rgba(80,50,20,0.18) 1px, transparent 1.5px);
+  background-size: 80px 80px, 60px 60px, 100px 100px, 70px 70px, 90px 90px, 75px 75px, 85px 85px;">
+
+<!-- ═══════════════ HILOS ═══════════════ -->
+<svg style="position:absolute;top:0;left:0;width:1700px;height:1530px;pointer-events:none;z-index:10;" viewBox="0 0 1700 1530">
+
+  <!-- HILOS ROJOS · izquierda → Dilan (todos convergen en el centro) -->
+  <!-- ADE → Dilan -->
+  <path class="str-r" d="M 200,290 Q 450,400 770,500" stroke="#CC0000" stroke-width="2.2" fill="none" opacity="0.88"/>
+  <!-- Ccajar → Dilan -->
+  <path class="str-r" d="M 200,530 Q 460,540 770,560" stroke="#CC0000" stroke-width="2.2" fill="none" opacity="0.88"/>
+  <!-- OMCT → Dilan -->
+  <path class="str-r" d="M 200,790 Q 440,720 770,620" stroke="#CC0000" stroke-width="2" fill="none" opacity="0.85"/>
+  <!-- Razón Pública → ESMAD/familia -->
+  <path class="str-r" d="M 230,1010 Q 430,950 600,890" stroke="#CC0000" stroke-width="2" fill="none" opacity="0.85"/>
+  <!-- Mural censurado → Dilan -->
+  <path class="str-r" d="M 200,1230 Q 460,1080 760,700" stroke="#CC0000" stroke-width="2" fill="none" opacity="0.85"/>
+  <!-- Arcadia → Dilan ícono -->
+  <path class="str-r" d="M 460,1230 Q 600,1100 780,720" stroke="#CC0000" stroke-width="1.8" fill="none" opacity="0.8"/>
+
+  <!-- HILOS AZULES · derecha → Dilan -->
+  <!-- Vicky Dávila → Dilan -->
+  <path class="str-b" d="M 1500,290 Q 1240,400 930,500" stroke="#1A3DB5" stroke-width="2.2" fill="none" opacity="0.88"/>
+  <!-- Paloma Valencia → Dilan -->
+  <path class="str-b" d="M 1500,540 Q 1240,550 930,565" stroke="#1A3DB5" stroke-width="2.2" fill="none" opacity="0.88"/>
+  <!-- Miguel Uribe Turbay → Dilan -->
+  <path class="str-b" d="M 1500,790 Q 1240,720 930,620" stroke="#1A3DB5" stroke-width="2" fill="none" opacity="0.85"/>
+  <!-- Rafael Nieto → "azuzadores" -->
+  <path class="str-b" d="M 1480,1010 Q 1300,950 1130,880" stroke="#1A3DB5" stroke-width="2" fill="none" opacity="0.85"/>
+  <!-- Memes Soyjak → "chirretes" -->
+  <path class="str-b" d="M 1480,1230 Q 1260,1080 950,720" stroke="#1A3DB5" stroke-width="2" fill="none" opacity="0.85"/>
+  <!-- De la Espriella → Capitán Cubillos -->
+  <path class="str-b" d="M 1240,1230 Q 1100,1080 940,720" stroke="#1A3DB5" stroke-width="1.8" fill="none" opacity="0.8"/>
+
+  <!-- LÍNEA CENTRAL VERTICAL · separador simbólico (línea de polarización) -->
+  <path d="M 850,140 L 850,1300" stroke="#5A3020" stroke-width="0.8" stroke-dasharray="3,6" fill="none" opacity="0.5"/>
+
+  <!-- HILOS CRUZADOS · donde los dos bandos comparten dato (el hecho duro) -->
+  <path class="str-x" d="M 770,500 Q 850,490 930,500" stroke="#7A4488" stroke-width="1.5" fill="none" opacity="0.55" stroke-dasharray="6,3"/>
+  <path class="str-x" d="M 770,620 Q 850,640 930,620" stroke="#7A4488" stroke-width="1.5" fill="none" opacity="0.55" stroke-dasharray="6,3"/>
+
+  <!-- NUDO CENTRAL · sobre Dilan -->
+  <circle cx="850" cy="560" r="16" fill="#3D2410" stroke="#7A0000" stroke-width="2.5"/>
+  <circle cx="850" cy="560" r="9" fill="#1A3DB5"/>
+  <circle cx="850" cy="560" r="4" fill="#CC0000"/>
+</svg>
+
+<!-- ═══════════════ TÍTULO ═══════════════ -->
+<div style="position:absolute;left:480px;top:18px;width:740px;background:#0B0500;padding:14px 26px;z-index:6;border:2px solid #7A4F2A;box-shadow:4px 5px 10px rgba(0,0,0,0.5);">
+  <div style="color:#A08040;font-size:9px;letter-spacing:4px;text-align:center;margin-bottom:4px;font-family:monospace;">EXPEDIENTE 23-N · ARCHIVO DE LA POLARIZACIÓN</div>
+  <div style="color:#F0DCA0;font-size:30px;font-weight:700;text-align:center;letter-spacing:5px;font-family:Georgia;">CASO DILAN CRUZ</div>
+  <div style="color:#888060;font-size:10px;text-align:center;margin-top:5px;letter-spacing:3px;font-family:monospace;">UN MUERTO · DOS NARRATIVAS · UNA POLARIZACIÓN</div>
+  <div style="color:#5A4030;font-size:8px;text-align:center;margin-top:4px;letter-spacing:2px;font-family:monospace;font-style:italic;">"asesinato" vs "accidente" · "estudiante" vs "vándalo"</div>
+</div>
+
+<!-- Etiqueta lado izquierdo -->
+<div style="position:absolute;left:30px;top:130px;background:rgba(204,0,0,0.85);padding:7px 14px;z-index:6;transform:rotate(-2deg);border:1px solid #800000;">
+  <div style="color:#FFF;font-size:10px;letter-spacing:3px;font-family:monospace;font-weight:700;">▼ NARRATIVA IZQUIERDA</div>
+  <div style="color:#FFCCCC;font-size:8px;letter-spacing:2px;font-family:monospace;margin-top:2px;">"a dilan lo mataron"</div>
+</div>
+
+<!-- Etiqueta lado derecho -->
+<div style="position:absolute;right:30px;top:130px;background:rgba(26,61,181,0.85);padding:7px 14px;z-index:6;transform:rotate(2deg);border:1px solid #001A66;">
+  <div style="color:#FFF;font-size:10px;letter-spacing:3px;font-family:monospace;font-weight:700;">NARRATIVA DERECHA ▼</div>
+  <div style="color:#CCDDFF;font-size:8px;letter-spacing:2px;font-family:monospace;margin-top:2px;">"era un vándalo, fue un accidente"</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- ════════════ COLUMNA IZQUIERDA · NARRATIVA ROJA ═════════════════ -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+
+<!-- 1. TUIT ADE BOGOTÁ — "Dilan no murió, a Dilan lo mataron" -->
+<div class="tweet-dark" style="left:35px;top:200px;width:240px;transform:rotate(-2deg);z-index:4;">
+  <div class="pin pin-r"></div>
+  <div style="display:flex;gap:8px;align-items:flex-start;">
+    <div style="width:34px;height:34px;border-radius:50%;background:#7A0000;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#FFD700;font-size:9px;font-weight:700;font-family:monospace;">ADE</div>
+    <div>
+      <div><span class="name">ADE 🇵🇸</span> <span class="verified">●</span></div>
+      <div class="handle">@adebogota · 23 nov 2021</div>
+    </div>
+  </div>
+  <div class="body"><b style="color:#FFF;">Dilan No murió, a Dilan lo mataron.</b> 23 de noviembre, dos años del asesinato al estudiante Dilan Cruz a manos del Esmad.</div>
+  <div class="body" style="margin-top:5px;">Exigimos justicia, ¡No más persecución y asesinatos a líderes, lideresas sociales y estudiantes!</div>
+  <div style="color:#1D9BF0;font-size:12px;margin-top:5px;">#NoMásEsmad</div>
+  <!-- Mini cartel anexo dentro del tuit -->
+  <div style="margin-top:8px;background:#1A3DB5;padding:6px 7px;border-radius:6px;">
+    <div style="color:#FFD700;font-size:11px;font-weight:900;letter-spacing:1px;font-family:Impact,sans-serif;line-height:1.05;">DILAN NO MURIÓ,<br/>A DILAN LO MATARON</div>
+    <div style="color:#FFF;font-size:7px;margin-top:3px;font-family:monospace;">23 NOV · PARO NACIONAL 24H</div>
+  </div>
+  <div class="meta">♥ 4.832 · ↻ 2.118</div>
+</div>
+
+<!-- 2. TUIT CCAJAR — "fue asesinado / 3.000 víctimas / impunidad 100%" -->
+<div class="tweet-dark" style="left:35px;top:455px;width:245px;transform:rotate(1.5deg);z-index:4;">
+  <div class="pin pin-r"></div>
+  <div style="display:flex;gap:8px;align-items:flex-start;">
+    <div style="width:34px;height:34px;border-radius:50%;background:#A0BC3F;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#FFF;font-size:8px;font-weight:700;font-family:monospace;">CCJ</div>
+    <div>
+      <div><span class="name">CCAJAR</span> <span class="verified">●</span></div>
+      <div class="handle">@Ccajar · 25 nov 2019</div>
+    </div>
+  </div>
+  <div class="body"><b style="color:#FFF;">Dilan Cruz fue asesinado por un agente del ESMAD</b> de la @PoliciaColombia mientras ejercía su <b>legítimo derecho a la protesta social</b>.</div>
+  <div class="body" style="margin-top:6px;color:#FF6666;">Más de <b>3.000 personas</b> han sido víctimas del ESMAD desde su creación en 2001. La <b>impunidad es del 100%</b>.</div>
+  <div style="color:#1D9BF0;font-size:12px;margin-top:5px;">#NoMásESMAD</div>
+  <div class="meta">10:35 PM · 25 nov 2019 · ♥ 415 · ↻ 391</div>
+</div>
+
+<!-- 3. RECORTE OMCT/FIDH — "asesinato" -->
+<div class="item-paper" style="left:30px;top:735px;width:240px;transform:rotate(-1deg);z-index:3;border-top:3px solid #CC0000;">
+  <div class="pin pin-r"></div>
+  <div style="font-size:7px;letter-spacing:2px;color:#660000;border-bottom:0.5px solid #999;padding-bottom:3px;margin-bottom:6px;font-family:monospace;">OMCT/FIDH · GINEBRA-PARÍS · 26 NOV 2019</div>
+  <div style="font-size:16px;font-weight:700;font-family:Georgia;line-height:1.1;margin-bottom:7px;color:#660000;">"ASESINATO<br/>del manifestante<br/>Dylan Cruz"</div>
+  <div style="background:#F0E0D0;padding:6px 8px;font-size:9px;line-height:1.5;color:#1A0808;margin-bottom:6px;">
+    <b>"Uso excesivo, indiscriminado y desproporcionado de la fuerza"</b> por parte del ESMAD.
+  </div>
+  <div style="font-size:9px;line-height:1.6;color:#2A1408;">
+    <div>● <b>280</b> personas heridas</div>
+    <div>● <b>839</b> detenciones arbitrarias</div>
+    <div>● <b>47</b> judicializados</div>
+    <div>● <b>392</b> sancionados con multa</div>
+    <div style="margin-top:4px;font-style:italic;color:#666;">— durante el paro 21N</div>
+  </div>
+  <div style="font-size:8px;color:#660000;margin-top:7px;letter-spacing:1px;font-family:monospace;">▼ LLAMADO URGENTE INTERNACIONAL</div>
+</div>
+
+<!-- 4. RAZÓN PÚBLICA — "el ESMAD se concibe como una familia" -->
+<div class="item-paper" style="left:30px;top:960px;width:260px;padding:11px;transform:rotate(2deg);z-index:3;">
+  <div class="pin pin-r"></div>
+  <div style="font-size:7px;letter-spacing:2px;color:#666;border-bottom:0.5px solid #CCC;padding-bottom:3px;margin-bottom:5px;font-family:monospace;">RAZÓN PÚBLICA · 2 DIC 2019 · NICOLÁS RUDAS</div>
+  <div style="font-size:13px;font-weight:700;line-height:1.25;margin-bottom:7px;font-family:Georgia;color:#1A0808;">"Se está resquebrajando el pacto de confianza entre sociedad y Policía."</div>
+  <div style="font-size:10px;line-height:1.55;color:#2A1808;margin-bottom:6px;font-style:italic;">Llamar a estas circunstancias un <b>"disturbio violento" es un abuso del lenguaje</b>: los manifestantes estaban en retirada y daban la espalda.</div>
+  <div style="background:#3A1010;color:#FFCCCC;padding:6px 8px;font-size:10px;line-height:1.5;border-left:3px solid #CC0000;">
+    El ESMAD se auto-define como <b>"una familia"</b>: lealtad por encima de verdad, jerarquía por encima de escrutinio.
+  </div>
+  <div style="font-size:8px;color:#660000;margin-top:6px;letter-spacing:1px;font-family:monospace;">● COLUMNA · UNIVERSIDAD NACIONAL</div>
+</div>
+
+<!-- 5. EL ESPECTADOR — Mural censurado -->
+<div class="item-paper" style="left:30px;top:1185px;width:225px;padding:11px;transform:rotate(-2.5deg);z-index:3;">
+  <div class="pin pin-r"></div>
+  <div style="font-size:7px;letter-spacing:2px;color:#666;border-bottom:0.5px solid #999;padding-bottom:3px;margin-bottom:6px;font-family:monospace;">EL ESPECTADOR · 23 SEP 2020</div>
+  <div style="font-size:15px;font-weight:700;font-family:Georgia;line-height:1.15;margin-bottom:7px;color:#660000;">¿CENSURA?<br/>Tapan mural<br/>de Dilan Cruz</div>
+
+  <!-- Simulación del mural censurado -->
+  <div style="position:relative;height:75px;margin-bottom:7px;border:1px solid #2A1A0A;overflow:hidden;">
+    <div style="position:absolute;inset:0;background:linear-gradient(135deg,#CC0000 0%,#990000 100%);display:flex;align-items:center;justify-content:center;">
+      <span style="color:#FFF;font-size:10px;font-family:Impact,sans-serif;letter-spacing:1px;text-shadow:1px 1px 0 #000;">DILAN VIVE</span>
+    </div>
+    <!-- Capa negra encima -->
+    <div style="position:absolute;left:0;top:0;right:0;height:75px;background:#0A0A0A;opacity:0.92;">
+      <div style="position:absolute;right:6px;bottom:5px;color:#444;font-size:8px;font-family:monospace;">[ pintado de negro ]</div>
+    </div>
+  </div>
+
+  <div style="font-size:9px;line-height:1.5;color:#1A0808;margin-bottom:5px;">A los 10 meses de su muerte, el mural en el centro de Bogotá <b>fue tapado con pintura negra</b>. Colectivos de artistas lo restauraron.</div>
+  <div style="font-size:8px;color:#660000;margin-top:5px;letter-spacing:1px;font-family:monospace;">● MEMORIA vs OLVIDO</div>
+</div>
+
+<!-- 6. SEMANA ARCADIA — Dilan ícono del paro -->
+<div class="item-paper" style="left:285px;top:1185px;width:200px;padding:11px;transform:rotate(2.5deg);z-index:3;">
+  <div class="pin pin-y"></div>
+  <div style="font-size:7px;letter-spacing:2px;color:#666;border-bottom:0.5px solid #CCC;padding-bottom:3px;margin-bottom:5px;font-family:monospace;">SEMANA / ARCADIA · 22 NOV 2019</div>
+  <div style="font-size:13px;font-weight:700;line-height:1.2;margin-bottom:6px;font-family:Georgia;color:#1A0808;">"Cacerolazos y un homenaje a Dilan: ilustradores retratan el paro"</div>
+
+  <!-- Mini grilla de "ilustraciones" -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:6px;">
+    <div style="background:#FFD700;height:32px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#660000;font-family:monospace;">CACEROLA</div>
+    <div style="background:#CC0000;height:32px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#FFD700;font-family:monospace;">21N</div>
+    <div style="background:#003399;height:32px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#FFF;font-family:monospace;">DILAN</div>
+    <div style="background:#1A1A1A;height:32px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#FFF;font-family:monospace;">RESISTE</div>
+  </div>
+
+  <div style="font-size:9px;line-height:1.5;color:#2A1808;font-style:italic;">Dilan se convierte en <b>ícono gráfico</b>: el rostro pintado, repetido, repartido en stencils, stickers y pancartas.</div>
+  <div style="font-size:8px;color:#666;margin-top:5px;letter-spacing:1px;font-family:monospace;">● CULTURA DE LA MEMORIA</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- ═════════════ COLUMNA CENTRAL · EXPEDIENTE DEL CASO ═════════════ -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+
+<!-- 7. MISSING / Foto Dilan (pieza central) -->
+<div class="item-paper" style="left:735px;top:230px;width:230px;padding:14px;transform:rotate(0.5deg);z-index:8;background:#F8F2E0;border:2px solid #8B0000;">
+  <div class="pin pin-r"></div>
+  <div style="font-size:28px;font-weight:700;text-align:center;letter-spacing:6px;color:#000;margin-bottom:6px;font-family:monospace;border-bottom:2px solid #000;padding-bottom:4px;">EXPEDIENTE</div>
+
+  <!-- Foto real de Dilan Cruz -->
+  <div style="height:130px;width:130px;margin:0 auto 8px;border:1px solid #1A1008;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center;filter:grayscale(100%) contrast(1.05);">
+    <img src="data:image/png;base64,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" alt="Dilan Cruz Medina" style="width:100%;height:100%;object-fit:cover;display:block;"/>
+  </div>
+
+  <div style="font-size:18px;font-weight:700;text-align:center;margin-bottom:5px;font-family:monospace;color:#111;">DILAN CRUZ<br/>MEDINA</div>
+  <div style="font-size:9px;text-align:center;color:#444;line-height:1.6;font-family:monospace;margin-bottom:7px;">
+    7 mar 2001 — 25 nov 2019<br/>
+    18 años · estudiante<br/>
+    Colegio Ricaurte IED
+  </div>
+
+  <div style="background:#000;color:#FFF;text-align:center;padding:7px;font-size:9px;font-family:monospace;letter-spacing:1px;line-height:1.6;">
+    HERIDO: 23 NOV 2019<br/>
+    Cra. 19 con Cra. 4ª · Bogotá<br/>
+    <span style="color:#FF6666;">CAUSA: PROYECTIL BEAN BAG</span><br/>
+    <span style="color:#FF6666;">Cap. Manuel Cubillos · ESMAD</span>
+  </div>
+
+  <div style="font-size:8px;color:#666;margin-top:7px;text-align:center;font-style:italic;">"Se graduaba del bachillerato<br/>el día que murió."</div>
+</div>
+
+<!-- 8. Evidencia: proyectil bean bag -->
+<div class="item-paper" style="left:990px;top:255px;width:185px;transform:rotate(-3deg);z-index:5;">
+  <div class="pin pin-y"></div>
+  <div style="font-size:8px;color:#660000;letter-spacing:2px;font-family:monospace;border-bottom:0.5px solid #999;padding-bottom:3px;margin-bottom:6px;">EVIDENCIA #01 · BALÍSTICA</div>
+  <div style="background:#2A1A0A;height:60px;display:flex;align-items:center;justify-content:center;margin-bottom:6px;border:1px solid #1A0A00;">
+    <svg width="130" height="44">
+      <rect x="10" y="15" width="85" height="16" fill="#5A3A20" stroke="#3A2010" stroke-width="0.5" rx="3"/>
+      <rect x="90" y="11" width="22" height="22" fill="#888" stroke="#444" stroke-width="0.5" rx="2"/>
+      <text x="65" y="26" font-size="7" fill="#FFF" font-family="monospace" text-anchor="middle">12 GAUGE</text>
+    </svg>
+  </div>
+  <div style="font-size:10px;font-weight:700;font-family:monospace;color:#111;line-height:1.3;margin-bottom:5px;">CARTUCHO "BEAN BAG"<br/>CAL. 12 · ESCOPETA</div>
+  <div style="font-size:8px;color:#333;line-height:1.5;">Fabricante: <b>Defense Technology</b> (EE.UU.). Arma menos letal disparada por ESMAD.</div>
+  <div style="font-size:8px;color:#660000;margin-top:5px;font-family:monospace;font-style:italic;border-top:0.5px solid #CCC;padding-top:5px;">Medicina Legal:<br/>"homicidio · trauma craneoencefálico"</div>
+</div>
+
+<!-- 9. Sticky amarilla: ¿accidente o asesinato? -->
+<div class="item-sticky" style="left:1000px;top:480px;width:165px;background:#FFE044;transform:rotate(3deg);z-index:6;border-bottom:3px solid #CCA800;">
+  <div class="pin pin-y"></div>
+  <div style="font-size:11px;font-weight:700;color:#2A2008;line-height:1.3;text-align:center;font-family:Georgia;">¿ACCIDENTE<br/>O<br/>ASESINATO?</div>
+  <div style="font-size:9px;color:#5A4400;text-align:center;margin-top:6px;line-height:1.5;font-style:italic;">Mismo cadáver.<br/>Misma bala.<br/>Dos países distintos.</div>
+</div>
+
+<!-- 10. Guante rojo / símbolo -->
+<div class="item-sticky" style="left:715px;top:480px;width:135px;background:#CC0000;transform:rotate(-3deg);z-index:6;color:#FFF;border-bottom:3px solid #800000;">
+  <div class="pin pin-y"></div>
+  <div style="font-size:9px;letter-spacing:2px;font-family:monospace;margin-bottom:5px;">SÍMBOLO · 23N</div>
+  <div style="font-size:12px;font-weight:700;line-height:1.3;font-family:Georgia;">EL GUANTE ROJO</div>
+  <div style="font-size:9px;margin-top:5px;line-height:1.5;font-family:Georgia;font-style:italic;">Dilan usaba un guante rojo para devolver los proyectiles del ESMAD.</div>
+</div>
+
+<!-- 11. Foto ESMAD -->
+<div class="item-photo" style="left:740px;top:670px;width:170px;transform:rotate(-1.5deg);z-index:4;">
+  <div class="pin pin-b"></div>
+  <div style="background:linear-gradient(135deg,#1A1A1A 0%,#2A2A2A 100%);height:115px;display:flex;align-items:center;justify-content:center;">
+    <svg width="125" height="100">
+      <rect x="15" y="55" width="95" height="32" fill="#444" stroke="#222" stroke-width="0.5"/>
+      <rect x="27" y="42" width="73" height="15" fill="#3A3A3A" stroke="#222" stroke-width="0.5"/>
+      <rect x="58" y="30" width="14" height="18" fill="#3A3A3A"/>
+      <circle cx="30" cy="88" r="7" fill="#1A1A1A" stroke="#666" stroke-width="0.5"/>
+      <circle cx="64" cy="88" r="7" fill="#1A1A1A" stroke="#666" stroke-width="0.5"/>
+      <circle cx="96" cy="88" r="7" fill="#1A1A1A" stroke="#666" stroke-width="0.5"/>
+      <text x="62" y="66" font-size="8" fill="#FFA500" font-family="monospace" text-anchor="middle" font-weight="700">ESMAD</text>
+    </svg>
+  </div>
+  <div style="background:#EDE6D2;padding:6px 8px;">
+    <div style="font-size:9px;font-weight:700;font-family:monospace;color:#1A2848;">EVIDENCIA #02</div>
+    <div style="font-size:8px;color:#555;line-height:1.4;">Escuadrón Móvil Antidisturbios — disuelto en 2023 por gob. Petro.</div>
+  </div>
+</div>
+
+<!-- 12. Mapa: punto del disparo -->
+<div class="item-paper" style="left:935px;top:680px;width:215px;padding:10px;transform:rotate(2deg);z-index:4;">
+  <div class="pin pin-y"></div>
+  <div style="font-size:7px;letter-spacing:2px;color:#666;text-align:center;margin-bottom:5px;font-family:monospace;border-bottom:0.5px solid #CCC;padding-bottom:3px;">ESCENA · CENTRO DE BOGOTÁ</div>
+  <svg width="195" height="115" viewBox="0 0 195 115" style="display:block;margin:0 auto;background:#E8DCC0;border:0.5px solid #888;">
+    <!-- Cuadrícula calles -->
+    <line x1="0" y1="40" x2="195" y2="40" stroke="#888" stroke-width="0.8"/>
+    <line x1="0" y1="75" x2="195" y2="75" stroke="#888" stroke-width="0.8"/>
+    <line x1="60" y1="0" x2="60" y2="115" stroke="#888" stroke-width="0.8"/>
+    <line x1="130" y1="0" x2="130" y2="115" stroke="#888" stroke-width="0.8"/>
+
+    <!-- Etiquetas calles -->
+    <text x="3" y="36" font-size="7" fill="#444" font-family="Georgia">Calle 19</text>
+    <text x="3" y="71" font-size="7" fill="#444" font-family="Georgia">Calle 17</text>
+    <text x="63" y="10" font-size="7" fill="#444" font-family="Georgia">Cra 4ª</text>
+    <text x="133" y="10" font-size="7" fill="#444" font-family="Georgia">Cra 7ª</text>
+
+    <!-- ESMAD avanza -->
+    <text x="20" y="55" font-size="6" fill="#1A3DB5" font-family="monospace" font-weight="700">ESMAD →</text>
+
+    <!-- Marca punto disparo -->
+    <circle cx="78" cy="42" r="6" fill="#CC0000" opacity="0.8"/>
+    <circle cx="78" cy="42" r="10" fill="none" stroke="#CC0000" stroke-width="1" stroke-dasharray="2,2"/>
+    <line x1="78" y1="42" x2="100" y2="22" stroke="#660000" stroke-width="0.5"/>
+    <text x="102" y="22" font-size="7" fill="#660000" font-family="Georgia" font-weight="700">Dilan cae</text>
+    <text x="102" y="32" font-size="6" fill="#660000" font-family="Georgia">15:47 h · 23 nov</text>
+
+    <!-- Manifestantes (retroceden) -->
+    <circle cx="85" cy="92" r="2" fill="#444"/>
+    <circle cx="95" cy="95" r="2" fill="#444"/>
+    <circle cx="105" cy="93" r="2" fill="#444"/>
+    <text x="80" y="108" font-size="6" fill="#444" font-family="monospace">manifestantes →</text>
+  </svg>
+  <div style="font-size:7px;color:#666;text-align:center;margin-top:4px;font-style:italic;">Reconstrucción a partir de testimonios</div>
+</div>
+
+<!-- 13. Sello CENSURADO sobre la escena -->
+<div style="position:absolute;left:1100px;top:830px;z-index:7;transform:rotate(-12deg);">
+  <span class="stamp" style="font-size:13px;padding:5px 12px;">EN INVESTIGACIÓN</span>
+</div>
+
+<!-- 14. Cronología compacta -->
+<div class="item-paper" style="left:725px;top:870px;width:250px;padding:11px;transform:rotate(-0.5deg);z-index:5;">
+  <div class="pin pin-g"></div>
+  <div style="font-size:8px;letter-spacing:2px;color:#444;border-bottom:0.5px solid #CCC;padding-bottom:3px;margin-bottom:6px;font-family:monospace;">CRONOLOGÍA DEL CASO</div>
+  <div style="font-size:9.5px;line-height:1.8;color:#1A0808;font-family:monospace;">
+    <div><b>21 NOV 19</b> · Inicio Paro Nacional</div>
+    <div><b>23 NOV 19 · 15:47</b> · Dilan recibe el disparo</div>
+    <div><b>25 NOV 19</b> · Dilan muere · Marcha del Silencio</div>
+    <div><b>27 NOV 19</b> · Medicina Legal: "homicidio"</div>
+    <div><b>30 NOV 19</b> · Vicky Dávila: "¡Desagradecidos!"</div>
+    <div><b>02 DIC 19</b> · Paloma Valencia: "era un vándalo"</div>
+    <div><b>SEP 2020</b> · Mural tapado con pintura negra</div>
+    <div><b>ABR 2021</b> · Policía: "Dilan se atravesó"</div>
+    <div><b>2023</b> · Petro disuelve el ESMAD</div>
+  </div>
+</div>
+
+<!-- 15. Foto: marcha del silencio -->
+<div class="item-photo" style="left:990px;top:870px;width:165px;transform:rotate(2deg);z-index:4;">
+  <div class="pin pin-r"></div>
+  <div style="background:linear-gradient(135deg,#1A1A1A 0%,#2A2820 100%);height:110px;display:flex;align-items:center;justify-content:center;">
+    <svg width="120" height="95">
+      <!-- Velas / siluetas -->
+      <circle cx="20" cy="55" r="2.5" fill="#FFD700"/>
+      <circle cx="35" cy="60" r="2.5" fill="#FFD700"/>
+      <circle cx="50" cy="55" r="2.5" fill="#FFD700"/>
+      <circle cx="65" cy="58" r="2.5" fill="#FFD700"/>
+      <circle cx="80" cy="55" r="2.5" fill="#FFD700"/>
+      <circle cx="95" cy="60" r="2.5" fill="#FFD700"/>
+      <!-- Silueta cabeza Dilan -->
+      <ellipse cx="60" cy="35" rx="14" ry="16" fill="#5A4030"/>
+      <rect x="50" y="40" width="20" height="20" fill="#5A4030"/>
+      <text x="60" y="82" font-size="6" fill="#FFD700" font-family="monospace" text-anchor="middle">DILAN VIVE</text>
+    </svg>
+  </div>
+  <div style="background:#EDE6D2;padding:5px 8px;text-align:center;">
+    <div style="font-size:8px;font-weight:700;font-family:monospace;color:#660000;">VELATÓN · 25 NOV 2019</div>
+    <div style="font-size:7px;color:#555;font-style:italic;">Cra 7 con Av. Jiménez · Bogotá</div>
+  </div>
+</div>
+
+<!-- 16. Informe policial polémico -->
+<div class="item-paper" style="left:725px;top:1110px;width:225px;padding:11px;transform:rotate(1.5deg);z-index:4;border-left:3px solid #555;">
+  <div class="pin pin-g"></div>
+  <div style="font-size:7px;letter-spacing:2px;color:#666;border-bottom:0.5px solid #CCC;padding-bottom:3px;margin-bottom:5px;font-family:monospace;">SEMANA · ABRIL 2021 · 17 MESES DESPUÉS</div>
+  <div style="font-size:13px;font-weight:700;line-height:1.25;margin-bottom:6px;font-family:Georgia;color:#1A0808;">"Dilan Cruz se cruzó en la línea de tiro del capitán del ESMAD"</div>
+  <div style="font-size:9px;line-height:1.5;color:#2A1808;font-style:italic;margin-bottom:5px;">Informe oficial de la Policía Judicial. La defensa lo usa como prueba de que <b>no hubo intención</b>.</div>
+  <div style="font-size:8px;color:#666;letter-spacing:1px;font-family:monospace;">● VERSIÓN INSTITUCIONAL</div>
+</div>
+
+<!-- 17. Cifras del paro -->
+<div class="item-sticky" style="left:970px;top:1120px;width:175px;background:#F0E8B8;transform:rotate(-2deg);z-index:5;border-bottom:3px solid #B8A85A;">
+  <div class="pin pin-y"></div>
+  <div style="font-size:9px;color:#5A4400;letter-spacing:1px;font-family:monospace;margin-bottom:5px;">PARO 21N · BALANCE</div>
+  <div style="font-size:10px;line-height:1.7;color:#2A2008;">
+    <div><b>4</b> muertos</div>
+    <div><b>280</b> heridos</div>
+    <div><b>839</b> detenidos</div>
+    <div><b>370</b> policías heridos<sup style="font-size:7px;">*</sup></div>
+  </div>
+  <div style="font-size:7px;color:#7A5500;margin-top:5px;font-style:italic;">* cifra reclamada por la derecha</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- ═══════════ COLUMNA DERECHA · NARRATIVA AZUL ════════════════════ -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+
+<!-- 18. VICKY DÁVILA — "¡Desagradecidos!" -->
+<div class="item-paper" style="left:1430px;top:190px;width:235px;padding:12px;transform:rotate(2deg);z-index:4;">
+  <div class="pin pin-b"></div>
+  <div style="font-size:7px;letter-spacing:2px;color:#1A3DB5;border-bottom:0.5px solid #999;padding-bottom:3px;margin-bottom:5px;font-family:monospace;">SEMANA · OPINIÓN · 30 NOV 2019</div>
+  <div style="font-size:8px;color:#999;font-family:monospace;margin-bottom:6px;">VICKY DÁVILA</div>
+  <div style="font-size:22px;font-weight:700;font-family:Georgia;line-height:1.05;margin-bottom:8px;color:#001A66;">¡Desagradecidos!</div>
+  <div style="font-size:9.5px;line-height:1.55;color:#1A1430;margin-bottom:6px;font-style:italic;">"No sigamos alimentando la rabia contra miles de soldados y policías... <b>Se nos olvida que sin ellos seríamos un país inviable.</b>"</div>
+  <div style="background:#001A66;color:#FFD700;padding:6px 8px;font-size:9px;line-height:1.4;font-style:italic;">"Qué habría sido del país ante el ataque de los <b>vándalos</b> si no existiera el Esmad."</div>
+  <div style="font-size:8px;color:#1A3DB5;margin-top:7px;letter-spacing:1px;font-family:monospace;">● COLUMNA DE OPINIÓN</div>
+</div>
+
+<!-- 19. PALOMA VALENCIA — "era un vándalo" -->
+<div class="item-paper" style="left:1430px;top:455px;width:240px;padding:12px;transform:rotate(-1.5deg);z-index:4;border-left:4px solid #003399;">
+  <div class="pin pin-b"></div>
+  <div style="font-size:7px;letter-spacing:2px;color:#1A3DB5;border-bottom:0.5px solid #999;padding-bottom:3px;margin-bottom:5px;font-family:monospace;">PANAM POST · 3 DIC 2019 · DECLARACIÓN</div>
+  <div style="font-size:9px;color:#666;margin-bottom:5px;font-family:monospace;">SENADORA <b>PALOMA VALENCIA</b><br/>Centro Democrático</div>
+
+  <!-- Mini foto -->
+  <div style="background:#5A4838;height:55px;width:55px;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;border:2px solid #001A66;">
+    <div style="text-align:center;"><div style="width:18px;height:18px;border-radius:50%;background:#AAA;margin:0 auto 2px;"></div><div style="width:26px;height:18px;background:#888;border-radius:2px 2px 0 0;margin:0 auto;"></div></div>
+  </div>
+
+  <div style="background:#001A66;color:#FFF;padding:7px 8px;font-size:11px;line-height:1.4;font-style:italic;font-family:Georgia;margin-bottom:5px;">"Dilan <b>era un vándalo</b>, pero tampoco merecía morir."</div>
+  <div style="font-size:9px;line-height:1.5;color:#1A1430;margin-bottom:4px;">"Dilan <b>se devuelve a recoger la granada</b> de los gases y por eso es que termina metiéndose en la trayectoria del disparo."</div>
+  <div style="font-size:9px;color:#444;font-style:italic;">"Esas personas que les gusta salir a atacar al Esmad."</div>
+  <div style="font-size:8px;color:#1A3DB5;margin-top:6px;letter-spacing:1px;font-family:monospace;">● VOZ DEL URIBISMO</div>
+</div>
+
+<!-- 20. MIGUEL URIBE TURBAY — "se atravesó" -->
+<div class="item-paper" style="left:1430px;top:735px;width:240px;padding:11px;transform:rotate(1deg);z-index:4;">
+  <div class="pin pin-b"></div>
+  <div style="font-size:7px;letter-spacing:2px;color:#1A3DB5;border-bottom:0.5px solid #999;padding-bottom:3px;margin-bottom:5px;font-family:monospace;">EL CLAN DE LAS NOTICIAS · 2024</div>
+
+  <!-- Pantalla simulada de noticia -->
+  <div style="background:#000;padding:8px;margin-bottom:6px;position:relative;">
+    <div style="background:#CC0000;color:#FFF;display:inline-block;padding:2px 8px;font-size:7px;font-family:monospace;letter-spacing:1px;font-weight:700;margin-bottom:5px;">ECN</div>
+    <div style="background:#2A2A2A;height:55px;display:flex;align-items:center;justify-content:center;margin-bottom:6px;">
+      <div style="text-align:center;"><div style="width:22px;height:22px;border-radius:50%;background:#999;margin:0 auto 2px;"></div><div style="width:32px;height:22px;background:#888;border-radius:2px 2px 0 0;margin:0 auto;"></div></div>
+    </div>
+    <div style="background:#1A1A1A;color:#FFF;padding:5px 7px;font-size:9.5px;line-height:1.35;border:0.5px solid #333;">"El disparo iba proyectado hacia <b>otro objetivo</b> y Dilan <b>se atravesó</b>."</div>
+    <div style="color:#888;font-size:7px;margin-top:4px;font-family:monospace;">— Miguel Uribe Turbay, senador CD</div>
+  </div>
+
+  <div style="font-size:8px;color:#666;line-height:1.4;font-style:italic;">El precandidato presidencial (1986–2025) defendió en streaming la versión institucional: "no hubo intención de matar".</div>
+  <div style="font-size:8px;color:#1A3DB5;margin-top:5px;letter-spacing:1px;font-family:monospace;">● PRECANDIDATO PRESIDENCIAL</div>
+</div>
+
+<!-- 21. TUIT RAFAEL NIETO LOAIZA — "azuzadores" -->
+<div class="tweet-dark" style="left:1410px;top:990px;width:255px;transform:rotate(-2deg);z-index:4;">
+  <div class="pin pin-b"></div>
+  <div style="display:flex;gap:8px;align-items:flex-start;">
+    <div style="width:32px;height:32px;border-radius:50%;background:#001A66;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#FFD700;font-size:9px;font-weight:700;font-family:monospace;">RN</div>
+    <div>
+      <div><span class="name">Rafael Nieto L.</span> <span class="verified">●</span></div>
+      <div class="handle">@RafaNietoLoaiza · 26 nov 2019</div>
+    </div>
+  </div>
+  <div class="body">"Murió Dilan. Nuestra solidaridad con su familia... Videos muestran que, fuera de toda duda, <b style="color:#FFF;">estaba embozado y participaba en disturbios</b>. La respuesta policial fue a distancia."</div>
+  <div class="body" style="margin-top:5px;color:#FFB0B0;">"¡Insisto en <b>responsabilidad de quien azuza a los colegiales</b>!"</div>
+  <div style="color:#1D9BF0;font-size:11px;margin-top:5px;">#PetroEsCulpable</div>
+  <div class="meta">♥ 5.812 · ↻ 3.420</div>
+</div>
+
+<!-- 22. MEME SOYJAK PORKY 2024 -->
+<div class="item-paper" style="left:1430px;top:1230px;width:230px;padding:8px;transform:rotate(2deg);z-index:4;background:#0F0F0F;border:1px solid #333;">
+  <div class="pin pin-b"></div>
+  <div style="font-size:7px;letter-spacing:1px;color:#999;font-family:monospace;margin-bottom:5px;">@iLordPorky · 9 jun 2024</div>
+
+  <!-- Cara soyjak simplificada -->
+  <div style="background:#FFF;padding:6px;margin-bottom:6px;display:flex;justify-content:center;">
+    <svg width="80" height="80" viewBox="0 0 80 80">
+      <!-- gorra militar con estrella roja -->
+      <rect x="14" y="10" width="52" height="13" fill="#3A4A2A"/>
+      <rect x="18" y="6" width="44" height="6" fill="#5A6A3A"/>
+      <polygon points="38,11 40,16 45,16 41,19 43,24 38,21 33,24 35,19 31,16 36,16" fill="#CC0000"/>
+      <!-- cara -->
+      <ellipse cx="40" cy="48" rx="22" ry="26" fill="#F5E0CC" stroke="#000" stroke-width="1.5"/>
+      <!-- gafas -->
+      <circle cx="30" cy="44" r="6" fill="none" stroke="#000" stroke-width="1.5"/>
+      <circle cx="50" cy="44" r="6" fill="none" stroke="#000" stroke-width="1.5"/>
+      <line x1="36" y1="44" x2="44" y2="44" stroke="#000" stroke-width="1.5"/>
+      <!-- ojos -->
+      <circle cx="30" cy="44" r="2" fill="#000"/>
+      <circle cx="50" cy="44" r="2" fill="#000"/>
+      <!-- boca gritando -->
+      <ellipse cx="40" cy="62" rx="10" ry="6" fill="#3A1A0A"/>
+      <!-- barba -->
+      <path d="M 22 56 Q 25 70 40 73 Q 55 70 58 56" fill="none" stroke="#000" stroke-width="1.2"/>
+    </svg>
+  </div>
+
+  <div style="color:#FFF;font-size:9px;line-height:1.4;font-family:monospace;">
+    <b style="color:#FFD700;">DYLAN CRUZ EN 2019:</b><br/>
+    "Subir la gasolina 100 pesos es un crimen y me voy a hacer matar por eso."
+  </div>
+  <div style="color:#FFF;font-size:9px;line-height:1.4;font-family:monospace;margin-top:6px;">
+    <b style="color:#FFD700;">PETRISTAS EN 2024:</b><br/>
+    "Qué bueno que siga subiendo... Mr Taxes el mejor 😉"
+  </div>
+  <div style="font-size:7px;color:#888;margin-top:6px;font-style:italic;">● Meme reciclado · burla al "mártir"</div>
+</div>
+
+<!-- 23. TUIT @GomezM — "chirretes inservible" -->
+<div class="tweet-dark" style="left:1200px;top:1230px;width:220px;transform:rotate(-2.5deg);z-index:4;">
+  <div class="pin pin-b"></div>
+  <div style="display:flex;gap:8px;align-items:flex-start;">
+    <div style="width:30px;height:30px;border-radius:50%;background:#1A3DB5;flex-shrink:0;"></div>
+    <div>
+      <div><span class="name">Mateo Gomez</span></div>
+      <div class="handle">@GomezM... · 17/07/25</div>
+    </div>
+  </div>
+  <div class="body">"Yo marché en el 2019 y hoy me doy cuenta de algo. <b style="color:#FFB0B0;">Dylan Cruz era un chirretes inservible</b>, igual q los de la primera línea. Esas marchas solo subieron fue corruptos."</div>
+  <div class="meta">💬 1 · 6 años después</div>
+</div>
+
+<!-- 24. ABELARDO DE LA ESPRIELLA -->
+<div class="item-paper" style="left:1200px;top:1015px;width:200px;padding:10px;transform:rotate(2deg);z-index:3;">
+  <div class="pin pin-b"></div>
+  <div style="font-size:7px;letter-spacing:2px;color:#1A3DB5;border-bottom:0.5px solid #CCC;padding-bottom:3px;margin-bottom:5px;font-family:monospace;">DEFENSA JURÍDICA · DIC 2019</div>
+  <div style="font-size:13px;font-weight:700;line-height:1.2;margin-bottom:6px;font-family:Georgia;color:#001A66;">ABELARDO DE LA ESPRIELLA</div>
+  <div style="font-size:9px;line-height:1.5;color:#1A1430;margin-bottom:5px;font-style:italic;">"Asumirá <b>gratis</b> la defensa del capitán Cubillos del ESMAD."</div>
+  <div style="font-size:8px;color:#555;line-height:1.5;">Criticó a Medicina Legal por "prejuzgar" al uniformado.</div>
+  <div style="font-size:8px;color:#1A3DB5;margin-top:5px;letter-spacing:1px;font-family:monospace;">● PENALISTA URIBISTA</div>
+</div>
+
+<!-- 25. Sticky azul: el orden ante todo -->
+<div style="position:absolute;left:1240px;top:850px;width:120px;background:radial-gradient(circle at 35% 30%,#5577DD 0%,#003399 70%);border-radius:50%;height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(4deg);z-index:5;box-shadow:3px 4px 8px rgba(0,0,0,0.4);">
+  <div class="pin pin-y" style="top:-7px;"></div>
+  <div style="color:#FFD700;font-size:9px;letter-spacing:2px;text-align:center;font-family:monospace;line-height:1.5;font-weight:700;">EL ORDEN<br/>ANTE<br/>TODO</div>
+  <div style="color:#AAC0FF;font-size:7px;margin-top:5px;font-family:monospace;">#OrdenPúblico</div>
+</div>
+
+<!-- 26. Sticky rojo: nos están matando -->
+<div style="position:absolute;left:330px;top:855px;width:120px;background:radial-gradient(circle at 35% 30%,#FF4444 0%,#CC0000 70%);border-radius:50%;height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(-4deg);z-index:5;box-shadow:3px 4px 8px rgba(0,0,0,0.4);">
+  <div class="pin pin-y" style="top:-7px;"></div>
+  <div style="color:#FFF;font-size:9px;letter-spacing:2px;text-align:center;font-family:monospace;line-height:1.5;font-weight:700;">#NOS<br/>ESTÁN<br/>MATANDO</div>
+  <div style="color:#FFAAAA;font-size:7px;margin-top:5px;font-family:monospace;">Colombia 21N</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- POST-IT INFERIOR · LA TESIS DEL TABLERO                          -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+
+<!-- ════════ CONCLUSIÓN ACADÉMICA · COMPACTA ════════ -->
+<div class="item-paper" style="left:430px;top:1320px;width:860px;padding:14px 18px;transform:rotate(-0.3deg);z-index:6;background:#F4EED8;border:1px solid #BBB;">
+  <div class="pin pin-r" style="left:30%;"></div>
+  <div class="pin pin-b" style="left:70%;"></div>
+
+  <div style="border-bottom:1.5px solid #1A0808;padding-bottom:6px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-end;">
+    <div>
+      <div style="font-size:8px;color:#666;letter-spacing:3px;font-family:monospace;">FICHA DE ANÁLISIS · MARCO TEÓRICO</div>
+      <div style="font-size:17px;font-weight:700;color:#1A0808;font-family:Georgia;margin-top:2px;">¿Por qué dos verdades sobre un mismo cuerpo?</div>
+    </div>
+    <div style="font-size:8px;color:#666;font-family:monospace;text-align:right;letter-spacing:1px;">EXPEDIENTE 23-N</div>
+  </div>
+
+  <!-- Tres citas en línea, compactas -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:11px;">
+    <div style="background:#1A0808;color:#F0DCA0;padding:7px 9px;border-left:3px solid #CC0000;">
+      <div style="font-size:8px;letter-spacing:1px;color:#A08040;font-family:monospace;margin-bottom:3px;">▌ MOUFFE</div>
+      <div style="font-size:9px;line-height:1.4;font-family:Georgia;font-style:italic;">"Toda identidad colectiva implica la distinción <b>nosotros/ellos</b>."</div>
+    </div>
+    <div style="background:#1A1A2E;color:#CCDDFF;padding:7px 9px;border-left:3px solid #1A3DB5;">
+      <div style="font-size:8px;letter-spacing:1px;color:#88AAFF;font-family:monospace;margin-bottom:3px;">▌ HALL</div>
+      <div style="font-size:9px;line-height:1.4;font-family:Georgia;font-style:italic;">"Un mismo mensaje puede ser <b>decodificado</b> de más de una forma."</div>
+    </div>
+    <div style="background:#2A1A1A;color:#FFE0E0;padding:7px 9px;border-left:3px solid #884488;">
+      <div style="font-size:8px;letter-spacing:1px;color:#CC99CC;font-family:monospace;margin-bottom:3px;">▌ BOURDIEU</div>
+      <div style="font-size:9px;line-height:1.4;font-family:Georgia;font-style:italic;">"La política es lucha por el <b>poder de nombrar</b>."</div>
+    </div>
+  </div>
+
+  <!-- Conclusión muy breve -->
+  <div style="font-size:10.5px;color:#1A0808;line-height:1.6;font-family:Georgia;text-align:justify;">
+    Sobre los mismos hechos, dos relatos. La izquierda no <i>descubre</i> a un mártir y la derecha no <i>descubre</i> a un vándalo: <b>cada bando lo construye para definirse a sí mismo</b> (Mouffe). El mismo video se lee distinto porque cada espectador decodifica desde su posición ideológica (Hall), y la disputa real es por <b>quién impone el nombre legítimo del hecho</b> (Bourdieu). Dilan no muere solo el 25 de noviembre de 2019: <b>muere cada vez que es renombrado</b>.
+  </div>
+
+  <div style="margin-top:9px;text-align:center;font-size:8px;color:#666;font-family:monospace;letter-spacing:3px;">— ARCHIVO DE LA POLARIZACIÓN · CASO 23-N —</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- LEYENDA Y FRASE FINAL                                            -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+
+<!-- Leyenda movida a zona libre arriba a la derecha dentro del board -->
+<div class="item-paper" style="left:1180px;top:115px;width:230px;padding:9px 11px;transform:rotate(2deg);z-index:5;background:#1A1408;color:#EEE;border:1px solid #555;">
+  <div class="pin pin-y"></div>
+  <div style="font-size:8px;letter-spacing:3px;color:#AAA;margin-bottom:6px;font-family:monospace;">LEYENDA DE HILOS</div>
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><div style="width:30px;height:2.5px;background:#CC0000;flex-shrink:0;"></div><div style="font-size:9px;color:#EEE;font-family:monospace;">"Dilan no murió, lo mataron"</div></div>
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><div style="width:30px;height:2.5px;background:#1A3DB5;flex-shrink:0;"></div><div style="font-size:9px;color:#EEE;font-family:monospace;">"Era un vándalo, se atravesó"</div></div>
+  <div style="display:flex;align-items:center;gap:8px;"><div style="width:30px;border-top:1.5px dashed #884488;flex-shrink:0;"></div><div style="font-size:9px;color:#CCC;font-family:monospace;font-style:italic;">Hecho compartido</div></div>
+</div>
+
+<!-- Evidencia #00 movida a zona libre arriba a la izquierda dentro del board -->
+<div class="item-paper" style="left:300px;top:115px;width:220px;padding:9px 11px;transform:rotate(-2deg);z-index:5;background:#1A1408;color:#F0DCA0;border:1px solid #7A4F2A;">
+  <div class="pin pin-y"></div>
+  <div style="font-size:8px;letter-spacing:2px;color:#A08040;margin-bottom:5px;font-family:monospace;">EVIDENCIA #00 · EL DATO DURO</div>
+  <div style="font-size:9.5px;font-family:Georgia;line-height:1.5;color:#F0DCA0;">Bean bag calibre 12 disparado por el capitán <b>Manuel Cubillos</b> el 23 de noviembre de 2019.</div>
+  <div style="font-size:8px;color:#888;font-style:italic;margin-top:5px;font-family:Georgia;">Lo demás es interpretación.</div>
+</div>
+
+</div>
+</div>
+
+<script>
+function filtrar(t){
+  const r=document.querySelectorAll('.str-r');
+  const b=document.querySelectorAll('.str-b');
+  const x=document.querySelectorAll('.str-x');
+  document.getElementById('btn-all').className='ctrl-btn'+(t==='all'?' active-a':'');
+  document.getElementById('btn-b').className='ctrl-btn'+(t==='b'?' active-b':'');
+  document.getElementById('btn-r').className='ctrl-btn'+(t==='r'?' active-r':'');
+  r.forEach(el=>el.style.opacity=(t==='all'||t==='r')?'0.88':'0.05');
+  b.forEach(el=>el.style.opacity=(t==='all'||t==='b')?'0.88':'0.05');
+  x.forEach(el=>el.style.opacity=(t==='all')?'0.55':'0.05');
+}
+</script>
+
+</body>
+</html>
